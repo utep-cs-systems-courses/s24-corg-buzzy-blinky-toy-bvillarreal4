@@ -17,9 +17,6 @@ load: led.elf
 clean:
 	rm -f *.o *.elf *~ *.c#
 
-buzzer.c: buzzer.h
-main.c: buzzer.h
-
-main.o: led.h
+main.o: led.h buzzer.h
 
 wdInterruptHandler.o: led.h
