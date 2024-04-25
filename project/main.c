@@ -94,6 +94,13 @@ void switch_interrupt_handler_SW3(){
     __delay_cycles(1000000);
     buzzer_set_period(440);
     __delay_cycles(1000000);
+
+    buzzer_set_period(632);
+    __delay_cycles(1000000);
+    buzzer_set_period(550);
+    __delay_cycles(1000000);
+    buzzer_set_period(440);
+    __delay_cycles(1000000);
   }
 				      
 
