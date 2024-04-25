@@ -39,7 +39,7 @@ void switch_interrupt_handler(){
     buzzer_set_period(0);
   }
   else{
-    buzzer_set_period(1000);
+    buzzer_set_period(632);
   }
 
   
