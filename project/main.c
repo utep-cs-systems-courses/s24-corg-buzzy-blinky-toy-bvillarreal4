@@ -7,11 +7,18 @@
 #define SW2 BIT1
 #define SW3 BIT2
 
-#define switches (SW1 | SW2 | SW3)
+#define LED_RED BIT0
+#define LED_GREEN BIT6
+#define LEDS (BIT0 | BIT6)
+
+#define switches (SW1 | SW2 | SW3 | SW4)
 int main(void){
 
   configureClocks();
+  enableWDTInterrupts();
   buzzer_init();
+
+  P1DIR |= LEDS;
 
   P2REN |= switches;
   P2IE |= switches;
@@ -37,20 +44,26 @@ void __interrupt_vec(PORT2_VECTOR) Port_2(){
     P2IFG &= ~SW3;
     switch_interrupt_handler_SW3();
   }
+  if(P2IFG & SW4){
+    P2IFG &= ~SW4;
+    switch_interrupt_handler_SW4();
+  }
 
 }
 
 void switch_interrupt_handler_SW1(){
-  char p2 = P2IN;
+  char p1 = P1IN;
 
-  P2IES |= (p2 & SW1);
-  P2IES &= (p2 | ~SW1);
+  P1IES |= (p1 & switches);
+  P1IES &= (p1 | ~switches);
 
-  if(p2 & SW1){
-    buzzer_set_period(0);
+  if(p1 & SW1){
+    P1OUT |= LED_GREEN;
+    P1OUT &= ~LED_RED;
   }
   else{
-    buzzer_set_period(632);
+    P1OUT |= LED_RED;
+    P1OUT &= ~LED_GREEN;
   }
 }
 
@@ -102,7 +115,45 @@ void switch_interrupt_handler_SW3(){
     buzzer_set_period(440);
     __delay_cycles(1000000);
   }
-				      
 
-  
+ 
+}
+
+
+void switch_interrupt_handler_SW4(){
+  static int blinkLimit = 5; 
+  void blinkUpdate(){
+    static int blinkCount = 0;
+    blinkCount ++;
+    if (blinkCount >= blinkLimit) {
+      blinkCount = 0;
+      greenControl(1);
+    } else
+      greenControl(0);
+  }
+
+  void oncePerSecond(){
+    blinkLimit ++; 
+    if (blinkLimit >= 8) 
+      blinkLimit = 0;
+  }
+
+  void secondUpdate(){
+    static int secondCount = 0;
+    secondCount++;
+    if(secondCount >= 250){
+      secondCount = 0;
+      oncePerSecond();
+    } 
+  }
+
+  void timeAdvStateMachines(){
+    blinkUpdate();
+    secondUpdate();
+  }
+
+  void __interrupt_vec(WDT_VECTOR) WDT(){
+    timeAdvStateMachines();
+  } 
+ 
 }

@@ -8,7 +8,7 @@ AS = msp430-elf-as
 
 all: led.elf
 
-led.elf: $(COMMON_OBJECTS) buzzer.o
+led.elf: $(COMMON_OBJECTS) buzzer.o greenControl.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@^ ./lib/libTimer.a
 
 load: led.elf
