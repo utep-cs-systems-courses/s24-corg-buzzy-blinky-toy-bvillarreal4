@@ -1,0 +1,24 @@
+#include <msp430.h>
+#include "libTimer.h"
+#include "led.h"
+#include <stdlib.h>
+
+static int oneCycle = 0;
+
+int blinker(void){
+  P1DIR |= LEDS;
+  P1OUT &= ~LED_GREEN;
+  P1OUT |= LED_RED;
+
+  configureClocks();
+  enableWDTInterrupts();
+
+  if(oneCycle){
+    P1OUT &= ~LED_RED;
+    WDTCTL = WDTPW | WDTHOLD;
+    oneCycle = 0;
+  }
+
+  os_rs(0x18);
+}
+
