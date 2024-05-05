@@ -16,7 +16,7 @@
 int main(void){
 
   configureClocks();
-  enableWDTInterrupts();
+  // enableWDTInterrupts();
   buzzer_init();
 
   P1DIR |= LEDS;
