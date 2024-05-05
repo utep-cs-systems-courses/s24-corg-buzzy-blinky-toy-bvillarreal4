@@ -86,14 +86,6 @@ void switch_interrupt_handler_SW3(){
   P2IES |= (p2 & SW3);
   P2IES &= (p2 | ~SW3);
 
-  const int E = 632;
-  const int D = 55;
-  const int A = 440;
-
-  int song[] = {E,D,A,E,D,A,E,D,A,E,D,A,E,D,E,D,E,D,A,E,D,A,E,D,A,E,E,E,E,D,A,D};
-  int count = 0;
-  int limit = sizeof(song)/sizeof(song[0]);
-  int interruptCount = 0;
 
   if(p2 & SW3){
     buzzer_set_period(0);
